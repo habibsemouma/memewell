@@ -1,0 +1,9 @@
+flask
+flask_cors
+flask_sqlalchemy
+psycopg2-binary
+pandas
+scikit-learn
+numpy
+pillow
+requests_toolbelt
