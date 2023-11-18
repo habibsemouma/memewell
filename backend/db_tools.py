@@ -1,16 +1,10 @@
-from app import db, app, Image
+from app import db, app, Image,clean_text
 import json
 import os
 import re
 
-def clean_text(text):
-    text = re.sub(r'\.\w+', '', text)
-    text = re.sub(r'[^a-zA-Z0-9\s]', '', text)
-    text = text.lower()
-    return text
-
 def create_json():
-    folder = "memes"
+    folder = "dump/memes"
     memes = {
         "description": [], "path": []
     }
@@ -26,13 +20,9 @@ def create_json():
     return memes
 
 
-
-
-
 def create_db():
     with app.app_context():
         db.create_all()
-
 
 def populate_db():
     with app.app_context():
@@ -65,3 +55,4 @@ except:
 memes=create_json()
 create_db()
 populate_db()
+print("database loaded")

@@ -24,8 +24,8 @@ def resize_img(path):
     i.save(path)
 
 
-src_folder = 'added'
-dst_folder = 'memes'
+src_folder = 'dump/added'
+dst_folder = 'dump/memes'
 moved=[]
 with app.app_context():
     for root, dirs, files in os.walk(src_folder):
