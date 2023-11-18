@@ -1,0 +1,38 @@
+version: "3"
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+    networks:
+      net:
+        ipv4_address: 193.168.1.20
+    ports:
+      - "7500:80"
+
+  backend:
+    build:
+      context: ./backend
+    networks:
+      net:
+        ipv4_address: 193.168.1.30
+    volumes:
+      - ./memes:/etc/app/backend/memes
+      - ./added:/etc/app/backend/added
+    environment:
+      - DB_URI=postgresql://postgres:ilovecheese@localhost:5500/memesdb
+      - BACKEND_URI=http://localhost:5000
+      - FRONTEND_URI=http://localhost:4000
+      - CORS_ALLOWED=193.168.1.20
+    ports:
+      - "5000:5000"
+
+
+
+
+networks:
+  net:
+    ipam:
+      config:
+        - subnet: 193.168.1.0/24
+      

@@ -5,10 +5,13 @@ from flask_cors import CORS
 
 app=Flask("memesapp")
 
-CORS(app,origins="*")
-
-app.config['SQLALCHEMY_DATABASE_URI']=os.environ.get("DB_TEST_URI")
+app.config['SQLALCHEMY_DATABASE_URI']=os.environ.get("DB_URI")
+backend_uri=os.environ.get("BACKEND_URI")
 app.config['STATIC_FOLDER'] = 'memes'
+whitelist=os.environ.get('CORS_ALLOWED')
+print(whitelist)
+CORS(app,origins=whitelist)
+
 db = SQLAlchemy(app)
 
 class Image(db.Model):

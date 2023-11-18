@@ -5,6 +5,7 @@ from PIL import Image
 import json
 import numpy as np 
 from app import app,Image
+import sys
 
 def clean_text(text):
     text = re.sub(r'\.\w+', '', text)
@@ -21,6 +22,7 @@ def load_all_images():
     return corpus,ids_descriptions
 
 corpus,ids_descriptions=load_all_images()
+
 
 vectorizer = TfidfVectorizer()
 description_vectors = vectorizer.fit_transform(corpus)

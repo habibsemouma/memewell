@@ -1,4 +1,4 @@
-from app import app,db,User,Image,request,jsonify,send_from_directory
+from app import app,db,User,Image,request,jsonify,send_from_directory,backend_uri
 from utils import clean_text,pattern,vectorizer,predict
 
 @app.route('/memes/<path:filename>')
@@ -11,7 +11,7 @@ def images_fetch():
     text=clean_text(data.get("text"))
     prefix=clean_text(data.get("prefix"))
     images_paths=predict(f"{prefix} {text}")
-    data={"images":[f"localhost:5000/{path}" for path in images_paths]}
+    data={"images":[f"{backend_uri}/{path}" for path in images_paths]}
     return jsonify(data)
 
 

@@ -1,6 +1,7 @@
 <script>
   import axios from "axios";
   import { RingLoader } from "svelte-loading-spinners";
+
   let text, paths;
   let data_loading = false;
   let data_loaded = false;
@@ -15,7 +16,7 @@
     data_loading = true;
     let payload = { text: text,prefix:selectedbtn };
     const response = await axios.post(
-      "http://127.0.0.1:5000/images_fetch",
+      "http://localhost:5000"+"/images_fetch",
       payload
     );
     paths = response.data.images;
@@ -62,9 +63,9 @@
         <!-- svelte-ignore a11y-click-events-have-key-events -->
         <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
         <img
-          src="http://{path}"
+          src="{path}"
           alt="dummy"
-          on:click={() => dl_img("http://" + path)}
+          on:click={() => dl_img(path)}
         />
       {/each}
     {/if}
