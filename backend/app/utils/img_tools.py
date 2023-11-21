@@ -28,7 +28,7 @@ def register_image(img_path,root,resources):
             new_path = path.replace("added/", "memes/")
             image = Image(description=img_path, path=new_path)
             resources.db.session.add(image)
-            return new_path
+            return path
         except Exception as e:
             print(f"error for {path} {e}")
             return None
@@ -43,3 +43,17 @@ def load_all_images(resources):
         ids_descriptions = {idx: image.path for idx,
                             image in enumerate(images)}
     return corpus, ids_descriptions
+
+
+def dump_image(i,path):
+    width, height = i.size
+    if width>1920 or height >1080:
+        return "image too big"
+    if width <= 500 and height <= 500:
+        pass
+    else:
+        new_width = 500
+        new_height = 500
+        i = i.resize((int(new_width), int(new_height)))
+    i.save(path)
+    return 'image saved'

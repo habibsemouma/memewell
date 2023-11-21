@@ -5,23 +5,29 @@
   let text, paths;
   let data_loading = false;
   let data_loaded = false;
-  let selectedbtn=""
+  let selectedbtn = "";
+  let img_extensions = ["jpg", "jpeg", "png"];
+  let vid_extensions = ["mp4", "avi", "mov"];
 
-  function select_btn(btn){
-    selectedbtn=btn
+  function select_btn(btn) {
+    selectedbtn = btn;
   }
 
   async function fetch_memes() {
     data_loaded = false;
     data_loading = true;
-    let payload = { text: text,prefix:selectedbtn };
+    let payload = { text: text, prefix: selectedbtn };
     const response = await axios.post(
-      "http://localhost:5000"+"/images_fetch",
+      "http://localhost:5000" + "/images_fetch",
       payload
     );
     paths = response.data.images;
     data_loaded = true;
     data_loading = false;
+  }
+
+  function getExtension(filename) {
+    return filename.split(".").pop();
   }
 
   async function dl_img(dl_link) {
@@ -49,8 +55,16 @@
   <input placeholder="Describe your meme" bind:value={text} />
 
   <div>
-    <button  class:active={selectedbtn === "twitterfr"} on:click={() => select_btn("twitterfr")} id="twitterbtn">Twitter francais</button>
-    <button class:active={selectedbtn === ""} on:click={() => select_btn("")} id="randombtn">Random</button>
+    <button
+      class:active={selectedbtn === "twitterfr"}
+      on:click={() => select_btn("twitterfr")}
+      id="twitterbtn">Twitter francais</button
+    >
+    <button
+      class:active={selectedbtn === ""}
+      on:click={() => select_btn("")}
+      id="randombtn">Random</button
+    >
   </div>
 
   <button on:click={fetch_memes}>Get memes</button>
@@ -60,13 +74,14 @@
     {/if}
     {#if data_loaded}
       {#each paths as path}
-        <!-- svelte-ignore a11y-click-events-have-key-events -->
-        <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
-        <img
-          src="{path}"
-          alt="dummy"
-          on:click={() => dl_img(path)}
-        />
+        {#if vid_extensions.includes(getExtension(path))}
+          <video src={path} controls />
+        {/if}
+        {#if img_extensions.includes(getExtension(path))}
+          <!-- svelte-ignore a11y-click-events-have-key-events -->
+          <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+          <img src={path} alt="dummy" on:click={() => dl_img(path)} />
+        {/if}
       {/each}
     {/if}
   </div>
@@ -115,7 +130,6 @@
     font-size: 20px;
     padding: 10px;
     border-radius: 50px;
-    
   }
   button:hover {
     cursor: pointer;
@@ -147,7 +161,7 @@
   img:hover {
     cursor: pointer;
   }
-  .active{
+  .active {
     transform: scale(1.1);
     background-color: green;
   }

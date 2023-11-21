@@ -20,7 +20,7 @@ env_vars={
     }
 
 
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+
 
 
 class Image(db.Model):
@@ -44,20 +44,13 @@ models={
 }
 
 
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-
-
-
 
 class AppResources():
-    def __init__(self,app,db,models,folders,env_vars,allowed_extensions):
+    def __init__(self,app,db,models,folders,env_vars):
         self.app=app
         self.env_vars=env_vars
         self.folders=folders
         self.Image_class=Image
-        self.allowed_extensions=allowed_extensions
         self.db=db
         self.models=models
     def register_txt_tools(self,ids_descriptions,corpus,vectorizer,description_vectors):
@@ -66,7 +59,13 @@ class AppResources():
         self.description_vectors=description_vectors
         self.vectorizer=vectorizer
 
-resources=AppResources(app,db,models,folders,env_vars,ALLOWED_EXTENSIONS)
+    def allowed_file(self,filename):
+        ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg',"mp4", "avi", "mov"}
+        flag='.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+        return flag
+
+
+resources=AppResources(app,db,models,folders,env_vars)
 
 
 

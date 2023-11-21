@@ -19,7 +19,7 @@ with resources.app.app_context():
 
 
 for img_path in moved:
-    shutil.move(img_path,dst_folder)
+    shutil.move(img_path,dst_folder+"/twitterfr/")
 
 
 delete_empty_subfolders(src_folder)

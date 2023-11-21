@@ -1,10 +1,12 @@
 from resources import resources
 from flask import request, jsonify,send_from_directory
 from werkzeug.utils import secure_filename
-from utils.img_tools import load_all_images
+from utils.img_tools import load_all_images,dump_image,resize_img,Image_module
 from utils.text_tools import clean_text,predict
 from sklearn.feature_extraction.text import TfidfVectorizer
 import os
+import re
+import io
 
 corpus,ids_descriptions=load_all_images(resources)
 vectorizer= TfidfVectorizer()
@@ -27,25 +29,50 @@ def images_fetch():
     data={"images":[f"{resources.env_vars.get('backend_uri')}/{path}" for path in images_paths]}
     return jsonify(data)
 
-@resources.app.route("/images_add",methods=["POST"])
+@resources.app.route("/image_add",methods=["POST"])
 def image_add():
-    data=request.form
-    img=request.files.get("img")
-    description=clean_text(data.get("description"))
-    if img and allowed_file(img.filename):
-        filename=secure_filename(img.filename)
-    path=f"dump/memes/twitterfr/{filename}"
-    i = Image.open(io.BytesIO(img.read()))
 
-    width, height = i.size
-    if width <= 500 and height <= 500:
-        pass
-    else:
-        new_width = 500
-        new_height = 500
-        i = i.resize((int(new_width), int(new_height)))
-        i.save(path)
-    return jsonify({"message":"image added succesfully"})
+    data=request.form
+    img=request.files.get("image")
+    description=clean_text(data.get("description"))
+
+
+    if img and resources.allowed_file(img.filename):
+        filename=secure_filename(img.filename)
+    else: 
+        message="Error try again later"
+        return jsonify({"message":message})
+        
+    extension = re.search("(?<=\.)\w+$", filename).group(0)
+    folder=resources.folders.get("added_folder")
+    path=f"{folder}/{description}.{extension}"
+
+    image = Image_module.open(io.BytesIO(img.read()))
+    message=dump_image(image,path)
+    return jsonify({"message":message})
+
+
+@resources.app.route("/video_add",methods=["POST"])
+def video_add():
+
+    data=request.form
+    img=request.files.get("video")
+    description=clean_text(data.get("description"))
+
+
+    if vid and resources.allowed_file(vid.filename):
+        filename=secure_filename(vid.filename)
+    else: 
+        message="Error try again later"
+        return jsonify({"message":message})
+        
+    extension = re.search("(?<=\.)\w+$", filename).group(0)
+    folder=resources.folders.get("added_folder")
+    path=f"{folder}/{description}.{extension}"
+
+    image = Image_module.open(io.BytesIO(vid.read()))
+    message=dump_image(image,path)
+    return jsonify({"message":message})
 
 
 if __name__ == "__main__":
