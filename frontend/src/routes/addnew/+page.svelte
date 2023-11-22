@@ -1,42 +1,60 @@
 <script>
   import axios from "axios";
 
-  let image_file, description;
-  let status=""
+  let media_file, description;
+  let status = "";
+  const image_extensions = ["jpg", "jpeg", "png"];
+  const video_extensions = ["mp4", "avi", "mov"];
 
-  async function send_image() {
-    image_file=image_file[0]
+  async function send_media() {
+    media_file = media_file[0];
     if (description.length > 60) {
-      return "length error";
+      status= "length error"
+      return;
     }
-    if (image_file.size > 1920 * 1080) {
-      return "size error";
-    }
-    const re = /(?:\.([^.]+))?$/;
-    const fileExtension = re.exec(image_file.name)[1];
-    const allowedExtensions = ["jpg", "jpeg", "png"];
-    if (!allowedExtensions.includes(fileExtension)) {
-      status= "extension error";
-      return
-    }
-    if (image_file.size > 1920 * 1080) {
+    if (media_file.size > 1920 * 1080) {
       status="size error";
       return
     }
+    const re = /(?:\.([^.]+))?$/;
+    const fileExtension = re.exec(media_file.name)[1];
+    if (image_extensions.includes(fileExtension)) {
+      if (media_file.size > 1920 * 1080) {
+        
+        status = "size error";
+        console.log("qdqdscsq",media_file.size)
+        return;
+      } else {
+        const api_endpoint = "http://localhost:5000/image_add";
+        const media_type ="image"
+      }
+    } else if (video_extensions.includes(fileExtension)) {
+      if (media_file.size > 50 * 1024 * 1024) {
+        status = "size error";
+        console.log("qdqd",media_file.size)
+        return;
+      } else {
+        const api_endpoint = "http://localhost:5000/video_add";
+        const media_type="video"
+      }
+    } else {
+      status = "extension error";
+      return;
+    }
 
     const payload = new FormData();
-    payload.append("image", image_file);
+    payload.append(media_type, media_file);
     payload.append("description", description);
-    let response = await axios.post("http://localhost:5000/image_add", payload);
-    status= response.data["message"];
+    let response = await axios.post(api_endpoint, payload);
+    status = response.data["message"];
   }
 </script>
 
 <div id="wrapper">
   <div id="sub-wrapper">
-    <input bind:files={image_file} type="file" />
+    <input bind:files={media_file} type="file" />
     <input bind:value={description} type="text" placeholder="description" />
-    <button on:click={send_image}>Submit</button>
+    <button on:click={send_media}>Submit</button>
     <h1>{status}</h1>
   </div>
 </div>
@@ -58,7 +76,7 @@
   #sub-wrapper {
     display: flex;
     flex-direction: column;
-    gap: 100px;
+    row-gap: 100px;
     padding: 1rem;
     justify-content: center;
     align-items: center;
@@ -80,5 +98,8 @@
     padding: 10px;
     border-radius: 50px;
     font-size: 20px;
+  }
+  button:hover {
+    cursor: pointer;
   }
 </style>

@@ -1,7 +1,7 @@
 from resources import resources
 from flask import request, jsonify,send_from_directory
 from werkzeug.utils import secure_filename
-from utils.img_tools import load_all_images,dump_image,resize_img,Image_module
+from utils.img_tools import load_all_images,dump_image,resize_img,Image_module,dump_video
 from utils.text_tools import clean_text,predict
 from sklearn.feature_extraction.text import TfidfVectorizer
 import os
@@ -37,7 +37,7 @@ def image_add():
     description=clean_text(data.get("description"))
 
 
-    if img and resources.allowed_file(img.filename):
+    if img and resources.allowed_image(img.filename):
         filename=secure_filename(img.filename)
     else: 
         message="Error try again later"
@@ -47,7 +47,6 @@ def image_add():
     folder=resources.folders.get("added_folder")
     path=f"{folder}/{description}.{extension}"
 
-    image = Image_module.open(io.BytesIO(img.read()))
     message=dump_image(image,path)
     return jsonify({"message":message})
 
@@ -59,8 +58,7 @@ def video_add():
     img=request.files.get("video")
     description=clean_text(data.get("description"))
 
-
-    if vid and resources.allowed_file(vid.filename):
+    if vid and resources.allowed_video(vid.filename):
         filename=secure_filename(vid.filename)
     else: 
         message="Error try again later"
@@ -70,8 +68,7 @@ def video_add():
     folder=resources.folders.get("added_folder")
     path=f"{folder}/{description}.{extension}"
 
-    image = Image_module.open(io.BytesIO(vid.read()))
-    message=dump_image(image,path)
+    message=dump_video(vid,description,path)
     return jsonify({"message":message})
 
 

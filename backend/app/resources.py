@@ -59,8 +59,12 @@ class AppResources():
         self.description_vectors=description_vectors
         self.vectorizer=vectorizer
 
-    def allowed_file(self,filename):
-        ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg',"mp4", "avi", "mov"}
+    def allowed_image(self,filename):
+        ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+        flag='.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+        return flag
+    def allowed_video(self,filename):
+        ALLOWED_EXTENSIONS = {"mp4", "avi", "mov"}
         flag='.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
         return flag
 

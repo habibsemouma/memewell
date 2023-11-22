@@ -1,5 +1,6 @@
 import os
 from PIL import Image as Image_module
+import moviepy.editor as mp
 
 def resize_img(path):
     i = Image_module.open(path)
@@ -57,3 +58,21 @@ def dump_image(i,path):
         i = i.resize((int(new_width), int(new_height)))
     i.save(path)
     return 'image saved'
+
+def dump_video(video,description,path):
+    if description == '':
+        return "Error in description"
+
+    if len(video.read()) > 50 * 1024 * 1024:
+        return "Video too large"
+        
+    video.seek(0) 
+
+    clip = mp.VideoFileClip(video)
+    if clip.duration > 120:
+        return "Video too long"
+
+    filename = video.filename
+    video.save(path)
+
+    return "Video successfully uploaded"
