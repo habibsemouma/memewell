@@ -23,7 +23,6 @@ def static_files(filename):
 @resources.app.route("/images_fetch",methods=["POST"])
 def images_fetch():
     data=request.get_json()
-    print(type(data.get("text")))
     text=clean_text(data.get("text"))
     prefix=clean_text(data.get("prefix"))
     images_paths=predict(f"{prefix} {text}",resources)
